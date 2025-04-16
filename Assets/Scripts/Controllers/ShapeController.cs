@@ -35,8 +35,8 @@ public class ShapeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
             Move(Vector3.right);
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-            Move(Vector3.down); 
+        // if (Input.GetKeyDown(KeyCode.DownArrow))
+        //     Move(Vector3.down); 
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
             Rotate(-90); 
