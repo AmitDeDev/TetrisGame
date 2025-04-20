@@ -292,7 +292,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.25938946, g: 0.26490992, b: 0.2735849, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -736,6 +736,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5d89ddbef425c40b2619f062472e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rowSpriteInheritance: 1
+  colorParticles:
+  - {fileID: 5183934556125260711, guid: 5d902d944451a1043b65013b8f8c64ce, type: 3}
+  - {fileID: 5183934556125260711, guid: 5e75af528ebc6314c8bf0f76fde70776, type: 3}
+  - {fileID: 5183934556125260711, guid: 877ebf363e375214899b44552addc5bc, type: 3}
+  - {fileID: 5183934556125260711, guid: 495080c0b3fa031418f62b82c78951f2, type: 3}
+  - {fileID: 5183934556125260711, guid: fdb0aa4dd64de9d4b93f8b7d20500eaa, type: 3}
+  - {fileID: 5183934556125260711, guid: 18b783f82490f8a4888b39592fa81e5b, type: 3}
+  - {fileID: 5183934556125260711, guid: 50fb7755398d7134daa2c1641ac525cd, type: 3}
+  rowEffectYOffset: 0.5
+  referenceSprites:
+  - {fileID: 21300000, guid: ab2ac6eb2d12b7a41aade48693b58d3e, type: 3}
+  - {fileID: 21300000, guid: edb76d3d78adb214b9c42481bcd62483, type: 3}
+  - {fileID: 21300000, guid: b48a2384155c3234a9c25c10f35901e4, type: 3}
+  - {fileID: 21300000, guid: bf1f582ca800d54408ab35064578cb69, type: 3}
+  - {fileID: 21300000, guid: a72eb646dac4fd146b60199c988955bd, type: 3}
+  - {fileID: 21300000, guid: 8b9bf4532483fe34eb11ee07ac77177b, type: 3}
+  - {fileID: 21300000, guid: ef2faf1b26f9973458b69fd2f4c7dd35, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -7,12 +7,17 @@ public class GridManager : MonoBehaviour
     public static int GridHeight = 80;
 
     public static Transform[,] grid = new Transform[GridWidth, GridHeight];
-    
+
     [Header("Row Color Mode")]
     public bool rowSpriteInheritance = true;
-    
+
+    [Header("Line Clear Effects")]
+    public List<GameObject> colorParticles = new List<GameObject>(); 
+    public float rowEffectYOffset = 0.5f;
+    public List<Sprite> referenceSprites = new List<Sprite>(); 
+
     public static GridManager Instance;
-    
+
     private static Dictionary<int, Sprite> rowSprites = new Dictionary<int, Sprite>();
 
     private void Awake()
@@ -43,7 +48,7 @@ public class GridManager : MonoBehaviour
                 grid[x, y] = block;
             }
         }
-        
+
         if (Instance != null && Instance.rowSpriteInheritance)
         {
             Instance.ApplyRowSpriteInheritance(shape);
@@ -56,10 +61,11 @@ public class GridManager : MonoBehaviour
         {
             if (IsLineFull(y))
             {
+                ScoreView.Instance?.AddScore(100);
+                TriggerRowClearEffect(y);
                 DeleteLine(y);
                 MoveRowsDown(y);
                 y--;
-                ScoreView.Instance?.AddScore(100);
             }
         }
     }
@@ -101,7 +107,7 @@ public class GridManager : MonoBehaviour
                     grid[x, y - 1].position += Vector3.down;
                 }
             }
-            
+
             if (Instance != null && Instance.rowSpriteInheritance)
             {
                 if (rowSprites.ContainsKey(y))
@@ -112,7 +118,7 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    
+
     private void ApplyRowSpriteInheritance(Transform shape)
     {
         foreach (Transform block in shape)
@@ -127,13 +133,62 @@ public class GridManager : MonoBehaviour
 
             if (rowSprites.ContainsKey(y))
             {
-                // Row is already claimed
                 sr.sprite = rowSprites[y];
             }
             else
             {
-                // First block to claim this row
                 rowSprites[y] = sr.sprite;
+            }
+        }
+    }
+
+    private static void TriggerRowClearEffect(int y)
+    {
+        Vector3 position = new Vector3(GridWidth / 2f, y + Instance.rowEffectYOffset, 0);
+
+        if (!Instance.rowSpriteInheritance)
+        {
+            foreach (var particlePrefab in Instance.colorParticles)
+            {
+                if (particlePrefab == null) continue;
+
+                GameObject fx = Instantiate(particlePrefab, position, Quaternion.identity);
+                ParticleSystem ps = fx.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    ps.Play();
+                    Destroy(fx, ps.main.duration + ps.main.startLifetime.constantMax);
+                }
+                else
+                {
+                    Destroy(fx, 2f);
+                }
+            }
+        }
+        else
+        {
+            if (!rowSprites.ContainsKey(y)) return;
+
+            Sprite targetSprite = rowSprites[y];
+            int index = Instance.referenceSprites.IndexOf(targetSprite);
+
+            if (index >= 0 && index < Instance.colorParticles.Count)
+            {
+                GameObject particlePrefab = Instance.colorParticles[index];
+                if (particlePrefab != null)
+                {
+                    GameObject fx = Instantiate(particlePrefab, position, Quaternion.identity);
+                    ParticleSystem ps = fx.GetComponent<ParticleSystem>();
+                    if (ps != null)
+                    {
+                        ps.Play();
+                        Destroy(fx, ps.main.duration + ps.main.startLifetime.constantMax);
+                    }
+                    else
+                    {
+                        Destroy(fx, 2f);
+                    }
+                }
             }
         }
     }
