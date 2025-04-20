@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour
 {
@@ -6,6 +7,18 @@ public class GridManager : MonoBehaviour
     public static int GridHeight = 80;
 
     public static Transform[,] grid = new Transform[GridWidth, GridHeight];
+    
+    [Header("Row Color Mode")]
+    public bool rowSpriteInheritance = true;
+    
+    public static GridManager Instance;
+    
+    private static Dictionary<int, Sprite> rowSprites = new Dictionary<int, Sprite>();
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public static Vector2 RoundToGrid(Vector2 pos)
     {
@@ -22,10 +35,18 @@ public class GridManager : MonoBehaviour
         foreach (Transform block in shape)
         {
             Vector2 pos = RoundToGrid(block.position);
-            if ((int)pos.y < GridHeight)
+            int x = (int)pos.x;
+            int y = (int)pos.y;
+
+            if (y < GridHeight)
             {
-                grid[(int)pos.x, (int)pos.y] = block;
+                grid[x, y] = block;
             }
+        }
+        
+        if (Instance != null && Instance.rowSpriteInheritance)
+        {
+            Instance.ApplyRowSpriteInheritance(shape);
         }
     }
 
@@ -38,7 +59,7 @@ public class GridManager : MonoBehaviour
                 DeleteLine(y);
                 MoveRowsDown(y);
                 y--;
-                ScoreView.Instance?.AddScore(100); 
+                ScoreView.Instance?.AddScore(100);
             }
         }
     }
@@ -60,6 +81,11 @@ public class GridManager : MonoBehaviour
             GameObject.Destroy(grid[x, y].gameObject);
             grid[x, y] = null;
         }
+
+        if (rowSprites.ContainsKey(y))
+        {
+            rowSprites.Remove(y);
+        }
     }
 
     private static void MoveRowsDown(int fromY)
@@ -74,6 +100,40 @@ public class GridManager : MonoBehaviour
                     grid[x, y] = null;
                     grid[x, y - 1].position += Vector3.down;
                 }
+            }
+            
+            if (Instance != null && Instance.rowSpriteInheritance)
+            {
+                if (rowSprites.ContainsKey(y))
+                {
+                    rowSprites[y - 1] = rowSprites[y];
+                    rowSprites.Remove(y);
+                }
+            }
+        }
+    }
+    
+    private void ApplyRowSpriteInheritance(Transform shape)
+    {
+        foreach (Transform block in shape)
+        {
+            Vector2 pos = RoundToGrid(block.position);
+            int y = (int)pos.y;
+
+            if (y >= GridHeight) continue;
+
+            SpriteRenderer sr = block.GetComponent<SpriteRenderer>();
+            if (sr == null) continue;
+
+            if (rowSprites.ContainsKey(y))
+            {
+                // Row is already claimed
+                sr.sprite = rowSprites[y];
+            }
+            else
+            {
+                // First block to claim this row
+                rowSprites[y] = sr.sprite;
             }
         }
     }
