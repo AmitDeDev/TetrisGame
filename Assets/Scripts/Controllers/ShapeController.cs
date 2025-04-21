@@ -10,21 +10,26 @@ public class ShapeController : MonoBehaviour
     private float fallTimer = 0f;
     private bool hasLanded = false;
 
+    private GameObject ghostShape;
+
     private void Start()
     {
         currentFallDelay = normalFallDelay;
+        CreateGhostShape();
     }
 
     private void Update()
     {
         HandleInput();
-        
+
         fallTimer += Time.deltaTime;
         if (fallTimer >= currentFallDelay)
         {
             Move(Vector3.down);
             fallTimer = 0f;
         }
+
+        UpdateGhostShape();
     }
 
     private void HandleInput()
@@ -35,11 +40,8 @@ public class ShapeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
             Move(Vector3.right);
 
-        // if (Input.GetKeyDown(KeyCode.DownArrow))
-        //     Move(Vector3.down); 
-
         if (Input.GetKeyDown(KeyCode.UpArrow))
-            Rotate(-90); 
+            Rotate(-90);
 
         if (Input.GetKey(KeyCode.Space))
             currentFallDelay = fastFallDelay;
@@ -55,18 +57,16 @@ public class ShapeController : MonoBehaviour
         {
             transform.position -= direction;
 
-            if (direction == Vector3.down)
+            if (direction == Vector3.down && !hasLanded)
             {
-                if (!hasLanded)
-                {
-                    hasLanded = true;
+                hasLanded = true;
 
-                    SnapToGrid(); // Fix micro spacing
-                    GridManager.AddToGrid(transform);
-                    GridManager.CheckForLines();
-                    FindObjectOfType<ShapeSpawnerController>().SpawnNext();
-                    enabled = false;
-                }
+                SnapToGrid();
+                GridManager.AddToGrid(transform);
+                GridManager.CheckForLines();
+                FindObjectOfType<ShapeSpawnerController>().SpawnNext();
+                Destroy(ghostShape);
+                enabled = false;
             }
         }
     }
@@ -77,6 +77,8 @@ public class ShapeController : MonoBehaviour
 
         if (!IsValidPosition())
             transform.Rotate(0, 0, -angle);
+        else
+            UpdateGhostShape();
     }
 
     private bool IsValidPosition()
@@ -84,14 +86,11 @@ public class ShapeController : MonoBehaviour
         foreach (Transform block in transform)
         {
             Vector2 pos = GridManager.RoundToGrid(block.position);
-
             if (!GridManager.InsideGrid(pos))
                 return false;
-
             if (GridManager.grid[(int)pos.x, (int)pos.y] != null)
                 return false;
         }
-
         return true;
     }
 
@@ -101,5 +100,46 @@ public class ShapeController : MonoBehaviour
         {
             block.position = GridManager.RoundToGrid(block.position);
         }
+    }
+
+    private void CreateGhostShape()
+    {
+        ghostShape = Instantiate(gameObject, transform.position, transform.rotation);
+        Destroy(ghostShape.GetComponent<ShapeController>()); 
+
+        foreach (Transform block in ghostShape.transform)
+        {
+            SpriteRenderer sr = block.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.sprite = FindObjectOfType<ShapeSpawnerController>().ghostBlockSprite;
+            }
+        }
+    }
+
+    private void UpdateGhostShape()
+    {
+        if (ghostShape == null) return;
+
+        ghostShape.transform.position = transform.position;
+        ghostShape.transform.rotation = transform.rotation;
+        
+        while (IsValidGhostPosition(ghostShape.transform))
+        {
+            ghostShape.transform.position += Vector3.down;
+        }
+        
+        ghostShape.transform.position += Vector3.up;
+    }
+
+    private bool IsValidGhostPosition(Transform ghost)
+    {
+        foreach (Transform block in ghost)
+        {
+            Vector2 pos = GridManager.RoundToGrid(block.position);
+            if (!GridManager.InsideGrid(pos)) return false;
+            if (GridManager.grid[(int)pos.x, (int)pos.y] != null) return false;
+        }
+        return true;
     }
 }

@@ -10,7 +10,11 @@ public class ShapeSpawnerController : MonoBehaviour
     public Vector2 spawnPosition = new Vector2(5, 18);
 
     [Header("Block Sprites")]
-    public List<Sprite> blockSprites; 
+    public List<Sprite> blockSprites;
+    
+    [Header("Ghost Shape")]
+    public Sprite ghostBlockSprite;
+
 
     private void Start()
     {
