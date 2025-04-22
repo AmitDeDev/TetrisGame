@@ -18,7 +18,7 @@ public class GridManager : MonoBehaviour
 
     public static GridManager Instance;
 
-    private static Dictionary<int, Sprite> rowSprites = new Dictionary<int, Sprite>();
+    private static Dictionary<int, Sprite> rowOwnerSprites = new Dictionary<int, Sprite>();
 
     private void Awake()
     {
@@ -88,9 +88,9 @@ public class GridManager : MonoBehaviour
             grid[x, y] = null;
         }
 
-        if (rowSprites.ContainsKey(y))
+        if (rowOwnerSprites.ContainsKey(y))
         {
-            rowSprites.Remove(y);
+            rowOwnerSprites.Remove(y);
         }
     }
 
@@ -110,10 +110,10 @@ public class GridManager : MonoBehaviour
 
             if (Instance != null && Instance.rowSpriteInheritance)
             {
-                if (rowSprites.ContainsKey(y))
+                if (rowOwnerSprites.ContainsKey(y))
                 {
-                    rowSprites[y - 1] = rowSprites[y];
-                    rowSprites.Remove(y);
+                    rowOwnerSprites[y - 1] = rowOwnerSprites[y];
+                    rowOwnerSprites.Remove(y);
                 }
             }
         }
@@ -131,13 +131,13 @@ public class GridManager : MonoBehaviour
             SpriteRenderer sr = block.GetComponent<SpriteRenderer>();
             if (sr == null) continue;
 
-            if (rowSprites.ContainsKey(y))
+            if (rowOwnerSprites.ContainsKey(y))
             {
-                sr.sprite = rowSprites[y];
+                sr.sprite = rowOwnerSprites[y];
             }
             else
             {
-                rowSprites[y] = sr.sprite;
+                rowOwnerSprites[y] = sr.sprite;
             }
         }
     }
@@ -167,9 +167,9 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            if (!rowSprites.ContainsKey(y)) return;
+            if (!rowOwnerSprites.ContainsKey(y)) return;
 
-            Sprite targetSprite = rowSprites[y];
+            Sprite targetSprite = rowOwnerSprites[y];
             int index = Instance.referenceSprites.IndexOf(targetSprite);
 
             if (index >= 0 && index < Instance.colorParticles.Count)
@@ -195,7 +195,7 @@ public class GridManager : MonoBehaviour
     
     public static void SetRowSprite(int y, Sprite sprite)
     {
-        if (!rowSprites.ContainsKey(y))
-            rowSprites[y] = sprite;
+        if (!rowOwnerSprites.ContainsKey(y))
+            rowOwnerSprites[y] = sprite;
     }
 }

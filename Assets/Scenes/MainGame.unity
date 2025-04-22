@@ -750,7 +750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5d89ddbef425c40b2619f062472e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rowSpriteInheritance: 0
+  rowSpriteInheritance: 1
   colorParticles:
   - {fileID: 5183934556125260711, guid: 5d902d944451a1043b65013b8f8c64ce, type: 3}
   - {fileID: 5183934556125260711, guid: 5e75af528ebc6314c8bf0f76fde70776, type: 3}
