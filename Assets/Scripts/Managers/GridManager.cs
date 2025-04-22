@@ -192,4 +192,10 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+    
+    public static void SetRowSprite(int y, Sprite sprite)
+    {
+        if (!rowSprites.ContainsKey(y))
+            rowSprites[y] = sprite;
+    }
 }

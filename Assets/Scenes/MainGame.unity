@@ -702,6 +702,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ef2faf1b26f9973458b69fd2f4c7dd35, type: 3}
   - {fileID: 21300000, guid: b48a2384155c3234a9c25c10f35901e4, type: 3}
   - {fileID: 21300000, guid: edb76d3d78adb214b9c42481bcd62483, type: 3}
+  generateStartingLines: 1
+  numberOfLinesToGenerate: 5
+  holesPerLine: 2
   ghostBlockSprite: {fileID: 21300000, guid: 54df20c4e92b4824cbac9eca50e297cf, type: 3}
 --- !u!1 &1718933395
 GameObject:
@@ -747,7 +750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5d89ddbef425c40b2619f062472e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rowSpriteInheritance: 1
+  rowSpriteInheritance: 0
   colorParticles:
   - {fileID: 5183934556125260711, guid: 5d902d944451a1043b65013b8f8c64ce, type: 3}
   - {fileID: 5183934556125260711, guid: 5e75af528ebc6314c8bf0f76fde70776, type: 3}
