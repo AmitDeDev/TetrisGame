@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class GridManager : MonoBehaviour
 {
@@ -64,6 +65,7 @@ public class GridManager : MonoBehaviour
                 ScoreView.Instance?.AddScore(100);
                 TriggerRowClearEffect(y);
                 DeleteLine(y);
+                Camera.main.transform.DOShakePosition(0.5f, 0.5f, 20, 100, false);
                 MoveRowsDown(y);
                 y--;
             }

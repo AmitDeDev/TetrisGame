@@ -57,33 +57,14 @@ public class ShapeSpawnerController : MonoBehaviour
     {
         for (int y = 0; y < numberOfLinesToGenerate; y++)
         {
-            // generate holes per line
-            HashSet<int> holes = new HashSet<int>();
-            while (holes.Count < holesPerLine)
-            {
-                holes.Add(Random.Range(0, GridManager.GridWidth));
-            }
-
-            // pick a sprite to use for this row
-            Sprite rowSprite = null;
-            if (blockSprites.Count > 0)
-            {
-                rowSprite = blockSprites[Random.Range(0, blockSprites.Count)];
-            }
+            var holes = GenerateHolesPerLine();
+            var rowSprite = SetOwnerSpriteRow();
 
             for (int x = 0; x < GridManager.GridWidth; x++)
             {
                 if (holes.Contains(x)) continue;
-
-                // create a single block
-                GameObject block = new GameObject($"StartupBlock_X{x}_Y{y}");
-                block.transform.position = new Vector2(x, y);
-                block.transform.parent = GridManager.Instance.transform;
-
-                SpriteRenderer sr = block.AddComponent<SpriteRenderer>();
-                sr.sprite = rowSprite;
-
-                GridManager.grid[x, y] = block.transform;
+                
+                CreateBlocks(x, y, rowSprite);
             }
 
             // sprite for row sprite inheritance
@@ -93,5 +74,39 @@ public class ShapeSpawnerController : MonoBehaviour
             }
 
         }
+    }
+
+    private static void CreateBlocks(int x, int y, Sprite rowSprite)
+    {
+        GameObject block = new GameObject($"StartupBlock_X{x}_Y{y}");
+        block.transform.position = new Vector2(x, y);
+        block.transform.parent = GridManager.Instance.transform;
+
+        SpriteRenderer sr = block.AddComponent<SpriteRenderer>();
+        sr.sprite = rowSprite;
+
+        GridManager.grid[x, y] = block.transform;
+    }
+
+    private Sprite SetOwnerSpriteRow()
+    {
+        Sprite rowSprite = null;
+        if (blockSprites.Count > 0)
+        {
+            rowSprite = blockSprites[Random.Range(0, blockSprites.Count)];
+        }
+
+        return rowSprite;
+    }
+
+    private HashSet<int> GenerateHolesPerLine()
+    {
+        HashSet<int> holes = new HashSet<int>();
+        while (holes.Count < holesPerLine)
+        {
+            holes.Add(Random.Range(0, GridManager.GridWidth));
+        }
+
+        return holes;
     }
 }
