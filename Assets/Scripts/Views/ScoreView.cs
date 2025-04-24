@@ -10,11 +10,18 @@ public class ScoreView : MonoBehaviour
     public TextMeshProUGUI scoreText;
 
     private int score = 0;
+    public int CurrentScore => score;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void AddScore(int points)
